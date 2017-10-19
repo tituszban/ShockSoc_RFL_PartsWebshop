@@ -1,0 +1,33 @@
+<!doctype html>
+<title> Robot Fighting League Parts Webshop</title>
+<head>
+  <link rel="icon" href="{{url_for('static', filename='favicon.ico')}}">
+</head>
+
+<style>
+    body    { font-family: sans-serif; background: #3b0072; }
+    table   { border-collapse: collapse; width: 100%; background-color: #fff;}
+    th, td  { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+    .page   { margin: 1em auto; width: 50em; padding: 0.8em; background: white; }
+    a { display: block; font-size: 1em; margin-top: 0.67em; margin-bottom: 0.67em; margin-left: 0; margin-right: 0; font-weight: bold; }
+    a:link, a:visited, a:hover, a:active {color:black; text-decoration:none;}
+</style>
+
+<div class=page>
+    <table>
+        <tr>
+            <th>
+                <a href="http://www.luurfl.com"><h1>Robot Fighting League</h1></a>
+                <a href="{{url_for('index')}}"><h1>Parts Webshop</h1></a>
+                <b> - </b>
+            </th>
+            <th style="text-align: right;">
+                <img src="{{url_for('static', filename='ShockSoc RFL logo noBG.png')}}" alt="RFL logo", style="width: 10em; height: 10em;">
+            </th>
+        </tr>
+    </table>
+</div>
+<div class="page">
+    <a href="{{ url_for('new_session') }}"><img src="{{url_for('static', filename='enter_shop.png')}}", alt="Enter the shop", style="width:100%" </a>
+</div>
+

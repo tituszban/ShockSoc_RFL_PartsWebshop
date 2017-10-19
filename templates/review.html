@@ -1,0 +1,82 @@
+<!doctype html>
+<title> Robot Fighting League Parts Webshop</title>
+<head>
+  <link rel="icon" href="{{url_for('static', filename='favicon.ico')}}">
+</head>
+<style>
+    body    { font-family: sans-serif; background: #3b0072; }
+    table   { border-collapse: collapse; width: 100%; background-color: #fff;}
+    th, td  { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+    .page   { margin: 1em auto; width: 50em; padding: 0.8em; background: white; }
+    a { display: block; font-size: 1em; margin-top: 0.67em; margin-bottom: 0.67em; margin-left: 0; margin-right: 0; font-weight: bold; }
+    a:link, a:visited, a:hover, a:active {color:black; text-decoration:none;}
+</style>
+
+<div class=page>
+	<table>
+        <tr>
+            <th>
+                <a href="http://www.luurfl.com"><h1>Robot Fighting League</h1></a>
+                <a href="{{url_for('index')}}"><h1>Parts Webshop</h1></a>
+                Transaction id: {{ transaction_id }}
+            </th>
+            <th style="text-align: right;">
+                <img src="{{url_for('static', filename='ShockSoc RFL logo noBG.png')}}" alt="RFL logo", style="width: 10em; height: 10em;">
+            </th>
+        </tr>
+    </table>
+</div>
+<div class = page>
+    <table>
+        <tr>
+            <th>Name:</th>
+            <th>{{transaction['name']}}</th></th>
+        </tr>
+        <tr>
+            <th>Email:</th>
+            <th>{{transaction['email']}}</th></th>
+        </tr>
+        <tr>
+            <th>SSID:</th>
+            <th>{{transaction['ssid']}}</th></th>
+        </tr>
+    </table>
+</div>
+<div class=page>
+    <form action="/review/{{transaction_id}}" method="POST">
+        <table align="center">
+            <tr>
+                <th>ID</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Amount</th>
+            </tr>
+            {% for key in transaction['order items'].keys() %}
+                <tr>
+                    <th> {{key}} </th>
+                    <th> {{stock[key]['description']}}</th>
+                    <th> {{transaction['order items'][key]['qty']}}</th>
+                    <th> {{stock[key]['disp_price']}}</th>
+                    <th> {{transaction['order items'][key]['disp_price']}}</th>
+                </tr>
+            {% else %}
+                <tr><th>Error, no stock found</th></tr>
+            {% endfor %}
+            <tr>
+                <th colspan="3"></th>
+                <th style="text-align: right;">Total:</th>
+                <th>{{transaction['sum price']}}</th>
+            </tr>
+        </table>
+        <br><b>
+            By clicking the submit button, you agree to paying the specified amount {{transaction['sum price']}} via the union cash office, to receive the requested parts.
+        </b><br><br>
+        <b>
+            When the button is clicked it will open a print page. Either print immediately or save as a pdf, and print later.
+        </b><br><br>
+
+        <input type="submit" name="my-form" value="Submit Order"></th><br><br>
+        Use the browser back button, to go back
+    </form>
+</div>
