@@ -23,8 +23,23 @@ def format_money(m):
 
 def load_stock():
     global stock
+    try:
+        with open('stock.json') as stock_json:
+            stock = json.load(stock_json)
+    except:
+        stock = {}
+
     for key in stock.keys():
         stock[key]['disp_price'] = format_money(stock[key]['price'])
+
+
+def load_transactions():
+    global transactions
+    try:
+        with open('transactions.json') as transactions_json:
+            transactions = json.load(transactions_json)
+    except:
+        transactions = {}
 
 
 def new_session_id():
@@ -67,6 +82,7 @@ def shop_submit(transaction_id):
                                                    if request.form[key] != '' and request.form[key] != '0'}
     transactions[transaction_id]['sum price'] = format_money(sum([transactions[transaction_id]['order items'][key]['price']
                                                      for key in transactions[transaction_id]['order items'].keys()]))
+    transactions[transaction_id]['stock updated'] = False
     if transactions[transaction_id]['order items'] == {}:
         return redirect(url_for('shop', transaction_id=transaction_id))
     return redirect(url_for('review', transaction_id=transaction_id))
@@ -79,9 +95,19 @@ def review(transaction_id):
 
 @app.route('/review/<int:transaction_id>', methods=['POST'])
 def review_submit(transaction_id):
+    global stock
     transactions[transaction_id]['session state'] = 'complete'
+    if not transactions[transaction_id]['stock updated']:
+        transactions[transaction_id]['stock updated'] = True
+        for key in transactions[transaction_id]['order items'].keys():
+            stock[key]['qty'] -= transactions[transaction_id]['order items'][key]['qty']
+    with open('stock.json', 'w') as stock_json:
+        stock_json.write(json.dumps(stock, indent=4, ensure_ascii=False))
+    with open('transactions.json', 'w') as transactions_json:
+        transactions_json.write(json.dumps(transactions, indent=4, ensure_ascii=False))
     return render_template('reciept.html', transaction_id=transaction_id, stock=stock,
                            transaction=transactions[transaction_id])
+
 
 @app.route('/new_session')
 def new_session():
@@ -89,15 +115,39 @@ def new_session():
     transactions[transaction_id] = {'session state':'incomplete'}
     return redirect(url_for('details', transaction_id=transaction_id))
 
+
 @app.route('/index')
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
 @app.route('/get_transactions')
 def get_transactions():
-    return json.dumps(transactions, ensure_ascii=False)
+    with open('transactions.json') as transactions_json:
+        return transactions_json.read()
+
+
+@app.route('/upload_stock', methods=['POST'])
+def upload_stock():
+    global stock
+    content = request.json
+    if 'uploader_key' in content.keys() and 'confirmed' in content.keys():
+        if content['uploader_key'] == 'michaelFaraday' and content['confirmed'] == 'confirmed':
+            content.pop('uploader_key', [])
+            content.pop('confirmed', [])
+            with open('stock.json', 'w') as stock_json:
+                stock_json.write(json.dumps(content, indent=4, ensure_ascii=False))
+            load_stock()
+    return 'success'
+
+@app.route('/get_stock')
+def get_stock():
+    load_stock()
+    return json.dumps(stock, ensure_ascii=False)
+
 
 if __name__ == '__main__':
+    load_transactions()
     load_stock()
     app.run(host='0.0.0.0', debug=True)
