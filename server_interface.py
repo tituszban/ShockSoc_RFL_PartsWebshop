@@ -4,6 +4,8 @@ import requests
 
 address = 'ec2-35-176-114-206.eu-west-2.compute.amazonaws.com'
 
+password = "***"
+
 def upload_stock():
     file_name = input('stock csv file name: ')
     if not os.path.isfile(file_name):
@@ -18,7 +20,7 @@ def upload_stock():
             if columns[2].isdigit():
                 stock[columns[2]] = {"description": columns[1], "qty": int(columns[6]),
                                      "price": float(columns[8].replace('Â', '').replace('£', ''))}
-    stock['uploader_key'] = 'michaelFaraday'
+    stock['uploader_key'] = password
 
     confirmation = input('Are you sure, you want to update the stock (Y/n): ')
     if confirmation.lower() != 'y':
