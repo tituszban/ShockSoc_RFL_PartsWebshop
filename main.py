@@ -7,6 +7,8 @@ app = Flask(__name__)
 
 transactions = {}
 
+password = "***" # this obviously isn't the password on the server
+
 stock = {
         "000": {"description": "Brushless Outrunner and 30A ESC", "qty": 2, "price": 15},
         "100": {"description": "Brushed Motor 2 Pack", "qty": 10, "price": 3},
@@ -135,7 +137,7 @@ def upload_stock():
     global stock
     content = request.json
     if 'uploader_key' in content.keys() and 'confirmed' in content.keys():
-        if content['uploader_key'] == 'michaelFaraday' and content['confirmed'] == 'confirmed':
+        if content['uploader_key'] == password and content['confirmed'] == 'confirmed':
             content.pop('uploader_key', [])
             content.pop('confirmed', [])
             with open('stock.json', 'w') as stock_json:
