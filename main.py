@@ -1,3 +1,4 @@
+#coding: utf-8
 from flask import Flask, render_template, redirect, url_for, request
 from random import randint
 import math
@@ -16,9 +17,10 @@ stock = {
 
 def format_money(m):
     whole = math.floor(m)
-    decimal = math.floor((m - whole) * 100)
+    decimal = int(math.floor((m - whole) * 100))
     decimal = '00' if decimal == 0 else str(decimal)
-    return("£%d.%s" % (whole, decimal))
+    whole = str(int(whole))
+    return ("%s.%s" % (whole, decimal))
 
 
 def load_stock():
@@ -150,4 +152,4 @@ def get_stock():
 if __name__ == '__main__':
     load_transactions()
     load_stock()
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=80, debug=False)
